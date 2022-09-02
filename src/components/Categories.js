@@ -3,6 +3,7 @@ import React from 'react'
 import { colors } from '../globals/style'
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 
 
 const Categories = () => {
@@ -12,23 +13,23 @@ const Categories = () => {
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View style={styles.box}>
-                    <FontAwesome5 name="hamburger" size={24} color="black" style={styles.myicon} />
-                    <Text style={styles.mytext}>Burger</Text>
+                    <MaterialCommunityIcons name="food-apple-outline" size={24} color="black" style={styles.myicon} />
+                    <Text style={styles.mytext}>Starters</Text>
                 </View>
 
                 <View style={styles.box}>
-                    <FontAwesome5 name="pizza-slice" size={24} color="black" style={styles.myicon} />
-                    <Text style={styles.mytext}>Pizza</Text>
+                    <MaterialIcons name="dinner-dining" size={24} color="black" style={styles.myicon} />
+                    <Text style={styles.mytext}>Dinner</Text>
                 </View>
 
                 <View style={styles.box}>
                     <MaterialCommunityIcons name="noodles" size={24} color="black" style={styles.myicon} />
-                    <Text style={styles.mytext}>Noodles</Text>
+                    <Text style={styles.mytext}>Breakfast</Text>
                 </View>
 
                 <View style={styles.box}>
-                    <FontAwesome5 name="hamburger" size={24} color="black" style={styles.myicon} />
-                    <Text style={styles.mytext}>Burger</Text>
+                    <MaterialCommunityIcons name="cupcake" size={24} color="black" style={styles.myicon} />
+                    <Text style={styles.mytext}>Deserts</Text>
                 </View>
             </ScrollView>
         </View>
@@ -40,7 +41,7 @@ export default Categories
 const styles = StyleSheet.create({
     container: {
         backgroundColor: colors.col1,
-        width: '90%',
+        width: '100%',
         // height: 100,
         // alignItems: 'center',
         elevation: 10,
