@@ -6,37 +6,75 @@ import { Octicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 
+
+import { firebase } from '../../../Firebase/firebaseConfig'
+
 const LoginScreen = ({ navigation }) => {
     const [emailfocus, setEmailfocus] = useState(false);
     const [passwordfocus, setPasswordfocus] = useState(false);
     const [showpassword, setShowpassword] = useState(false);
 
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [customError, setcustomError] = useState('');
 
+
+    const handleLogin = () => {
+        firebase.auth().signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                // Signed in
+                var user = userCredential.user;
+                console.log('Logged in successfully !!!!!!   ');
+                // console.log(user);
+                // ...
+
+                navigation.navigate('welcomepage');
+            })
+            .catch((error) => {
+                var errorMessage = error.message;
+                // console.log(errorMessage);
+                if (errorMessage === 'Firebase: The email address is badly formatted. (auth/invalid-email).'
+                ) {
+                    setcustomError('Please enter a valid email address')
+                }
+                else {
+                    setcustomError('Incorrect email or password')
+                }
+            })
+    }
     return (
         <View style={styles.container}>
             <Text style={styles.head1}>Sign In</Text>
+            {customError !== '' && <Text style={styles.errormsg}>{customError}</Text>}
+
             <View style={styles.inputout}>
                 <AntDesign name="user" size={24} color={emailfocus === true ? colors.text1 : colors.text2} />
                 <TextInput style={styles.input} placeholder="Email" onFocus={() => {
                     setEmailfocus(true)
                     setPasswordfocus(false)
                     setShowpassword(false)
-                }} />
+                    setcustomError('')
+                }}
+                    onChangeText={(text) => {
+                        setEmail(text)
+                    }}
+                />
             </View>
             <View style={styles.inputout}>
                 <MaterialCommunityIcons name="lock-outline" size={24} color={passwordfocus == true ? colors.text1 : colors.text2} />
                 <TextInput style={styles.input} placeholder="Password" onFocus={() => {
                     setEmailfocus(false)
                     setPasswordfocus(true)
-
+                    setcustomError('')
                 }}
+                    onChangeText={(text) => { setPassword(text) }}
 
                     secureTextEntry={showpassword === false ? true : false}
                 />
 
                 <Octicons name={showpassword == false ? "eye-closed" : "eye"} size={24} color="black" onPress={() => setShowpassword(!showpassword)} />
             </View>
-            <TouchableOpacity style={btn1} onPress={() => navigation.navigate('home')}>
+            <TouchableOpacity style={btn1} onPress={() => handleLogin()}>
                 <Text style={{ color: colors.col1, fontSize: titles.btntxt, fontWeight: "bold" }}>Sign in</Text>
             </TouchableOpacity>
 
