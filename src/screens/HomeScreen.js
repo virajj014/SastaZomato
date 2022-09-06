@@ -9,7 +9,7 @@ import { colors, nonveg } from '../globals/style'
 import { firebase } from '../../Firebase/firebaseConfig'
 import Cardslider from '../components/Cardslider'
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
     const [foodData, setFoodData] = useState([]);
     const [VegData, setVegData] = useState([]);
     const [NonVegData, setNonVegData] = useState([]);
@@ -36,7 +36,7 @@ const HomeScreen = () => {
     return (
         <ScrollView style={styles.container}>
             <StatusBar />
-            <HomeHeadNav />
+            <HomeHeadNav navigation={navigation} />
             <View style={styles.searchbox}>
                 <AntDesign name="search1" size={24} color="black" style={
                     styles.searchicon
@@ -67,9 +67,9 @@ const HomeScreen = () => {
             <Categories />
             <OfferSlider />
             {/* <Text>HomeScreen</Text> */}
-            <Cardslider title={"Today's Special"} data={foodData} />
-            <Cardslider title={"NonVeg Love"} data={NonVegData} />
-            <Cardslider title={"Veg Hunger"} data={VegData} />
+            <Cardslider title={"Today's Special"} data={foodData} navigation={navigation} />
+            <Cardslider title={"NonVeg Love"} data={NonVegData} navigation={navigation} />
+            <Cardslider title={"Veg Hunger"} data={VegData} navigation={navigation} />
 
         </ScrollView>
     )

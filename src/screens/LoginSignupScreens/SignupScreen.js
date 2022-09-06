@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, StatusBar } from 'react-native'
 import { titles, colors, btn1, hr80 } from '../../globals/style'
 import { AntDesign } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
@@ -10,6 +10,7 @@ import { Entypo } from '@expo/vector-icons';
 
 
 import { firebase } from '../../../Firebase/firebaseConfig'
+
 
 const SignupScreen = ({ navigation }) => {
     const [emailfocus, setEmailfocus] = useState(false);
@@ -34,14 +35,6 @@ const SignupScreen = ({ navigation }) => {
     const [successmsg, setSuccessmsg] = useState(null);
 
     const handleSignup = () => {
-        const FormData = {
-            email: email,
-            password: password,
-            // cpassword: cpassword,
-            phone: phone,
-            name: name,
-            address: address
-        }
 
         if (password != cpassword) {
             // alert("Password doesn't match");
@@ -54,19 +47,29 @@ const SignupScreen = ({ navigation }) => {
         }
         try {
             firebase.auth().createUserWithEmailAndPassword(email, password)
-                .then(() => {
+                .then((userCredentials) => {
+                    // console.log(userCredentials?.user.uid)
                     console.log('user created')
                     // setSuccessmsg('User created successfully')
-                    const userRef = firebase.firestore().collection('UserData')
+                    if (userCredentials?.user.uid) {
+                        const userRef = firebase.firestore().collection('UserData')
+                        userRef.add({
+                            email: email,
+                            password: password,
+                            // cpassword: cpassword,
+                            phone: phone,
+                            name: name,
+                            address: address,
+                            uid: userCredentials?.user.uid
+                        }).then(() => {
+                            console.log('data added to firestore')
+                            setSuccessmsg('User created successfully')
+                        }).catch((error) => {
+                            console.log('firestore error ', error)
+                        }
 
-                    userRef.add(FormData).then(() => {
-                        console.log('data added to firestore')
-                        setSuccessmsg('User created successfully')
-                    }).catch((error) => {
-                        console.log('firestore error ', error)
+                        )
                     }
-
-                    )
                 })
                 .catch((error) => {
                     console.log('sign up firebase error ', error.message)
@@ -92,6 +95,7 @@ const SignupScreen = ({ navigation }) => {
     }
     return (
         <View style={styles.container}>
+            <StatusBar />
             {successmsg == null ?
                 <View style={styles.container}>
                     <Text style={styles.head1}>Sign Up</Text>
@@ -245,7 +249,7 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         // justifyContent: 'center',
-        marginTop: 60,
+        // marginTop: 60,
     },
     container1: {
         flex: 1,
