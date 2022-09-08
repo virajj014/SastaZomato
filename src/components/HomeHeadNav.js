@@ -13,7 +13,7 @@ const HomeHeadNav = ({ navigation }) => {
                 <Text style={styles.mytext}>Foodie</Text>
                 <MaterialCommunityIcons name="food-outline" size={26} color="black" style={styles.myicon} />
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate('userprofile')}>
+            <TouchableOpacity onPress={() => { navigation.navigate('userprofile') }}>
                 <FontAwesome5 name="user-circle" size={26} color="black" style={styles.myicon} />
             </TouchableOpacity>
         </View>

@@ -2,40 +2,36 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import logo from '../../../assets/logo.png';
 import { colors, hr80 } from '../../globals/style';
-
-
 import { firebase } from '../../../Firebase/firebaseConfig'
 
 const WelcomeScreen = ({ navigation }) => {
     const [userlogged, setUserlogged] = useState(null);
-
     useEffect(() => {
         const checklogin = () => {
             firebase.auth().onAuthStateChanged((user) => {
+                // console.log(user);
                 if (user) {
-                    // console.log(user);
+                    // navigation.navigate('home');
                     setUserlogged(user);
+                } else {
+                    // No user is signed in.
+                    console.log('no user');
                 }
-                else {
-                    setUserlogged(null);
-                    console.log('No user logged in');
-                }
-            })
+            });
         }
-        checklogin()
+        checklogin();
     }, [])
 
-    // console.log(userlogged);
 
-    const handleLogout = () => {
-        firebase.auth().signOut()
-            .then(() => {
-                setUserlogged(null);
-                console.log('User logged out');
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+    const handlelogout = () => {
+        firebase.auth().signOut().then(() => {
+            // Sign-out successful.
+            setUserlogged(null);
+            console.log('signed out');
+        }).catch((error) => {
+            // An error happened.
+            console.log(error);
+        });
     }
     return (
         <View style={styles.container}>
@@ -47,7 +43,8 @@ const WelcomeScreen = ({ navigation }) => {
             <Text style={styles.text}>Find the best food around you at lowest price.</Text>
             <View style={hr80} />
 
-            {userlogged == null ?
+            {userlogged === null ?
+
                 <View style={styles.btnout}>
                     <TouchableOpacity onPress={() => navigation.navigate('signup')}>
                         <Text style={styles.btn}>Sign up</Text>
@@ -56,19 +53,18 @@ const WelcomeScreen = ({ navigation }) => {
                         <Text style={styles.btn}>Log In</Text>
                     </TouchableOpacity>
                 </View>
+
                 :
                 <View style={styles.logged}>
-                    <Text style={styles.txtlog}>Signed in as &nbsp;
-                        <Text style={styles.txtlogin}>{userlogged.email}</Text>
-                    </Text>
-
+                    <Text style={styles.txtlog}>Signed in as <Text style={styles.txtlogin}>{userlogged.email}</Text></Text>
                     <View style={styles.btnout}>
                         <TouchableOpacity onPress={() => navigation.navigate('home')}>
-                            <Text style={styles.btn}>Go to Home</Text>
+                            <Text style={styles.btn}>Next</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleLogout()}>
-                            <Text style={styles.btn}>log Out</Text>
+                        <TouchableOpacity onPress={() => handlelogout()}>
+                            <Text style={styles.btn}>Log Out</Text>
                         </TouchableOpacity>
+
                     </View>
                 </View>
             }
@@ -124,13 +120,14 @@ const styles = StyleSheet.create({
     },
     logged: {
         alignItems: 'center',
+
     },
     txtlog: {
-        fontSize: 18,
+        fontSize: 16,
         color: colors.col1,
     },
     txtlogin: {
-        fontSize: 19,
+        fontSize: 16,
         color: colors.col1,
         fontWeight: '700',
         textDecorationStyle: 'solid',

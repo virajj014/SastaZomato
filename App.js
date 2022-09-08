@@ -8,6 +8,7 @@ import SignupScreen from './src/screens/LoginSignupScreens/SignupScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import Userprofile from './src/screens/Userprofile';
 import Productpage from './src/screens/Productpage';
+import UserCart from './src/screens/UserCart';
 export default function App() {
   const Stack = createNativeStackNavigator();
   return (
@@ -43,6 +44,12 @@ export default function App() {
           }}
         />
         <Stack.Screen name="productpage" component={Productpage}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen name="cart" component={UserCart}
           options={{
             headerShown: false,
           }}

@@ -3,11 +3,8 @@ import React from 'react'
 import { colors, veg, nonveg } from '../globals/style'
 
 const Cardslider = ({ title, data, navigation }) => {
-    // console.log(title)
-    // console.log(data)
-
-    const openProductpage = (item) => {
-        // console.log(item)
+    const openProductPage = (item) => {
+        // console.log('clicked ', item)
         navigation.navigate('productpage', item)
     }
     return (
@@ -15,37 +12,33 @@ const Cardslider = ({ title, data, navigation }) => {
             <Text style={styles.cardouthead}>
                 {title}
             </Text>
-
             <FlatList style={styles.cardsout}
-                horizontal
                 showsHorizontalScrollIndicator={false}
+                horizontal
                 data={data}
                 renderItem={({ item }) => (
-                    <TouchableOpacity key={item.index} onPress={() => {
-                        openProductpage(item)
-                    }}>
+                    <TouchableOpacity key={item.index}
+                        onPress={() => { openProductPage(item) }}>
                         <View style={styles.card}>
                             <View style={styles.s1}>
                                 <Image source={{
                                     uri: item.foodImageUrl
                                 }} style={styles.cardimgin} />
                             </View>
-
                             <View style={styles.s2}>
                                 <Text style={styles.txt1}>{item.foodName}</Text>
+
                                 <View style={styles.s2in}>
                                     <Text style={styles.txt2}>Rs.{item.foodPrice}/-</Text>
-                                    {/*  */}
                                     {item.foodType == 'veg' ? <Text style={veg}></Text> : <Text style={nonveg}></Text>}
                                 </View>
-                            </View>
 
+                            </View>
                             <View style={styles.s3}>
                                 <Text style={styles.buybtn}>
                                     Buy
                                 </Text>
                             </View>
-
                         </View>
                     </TouchableOpacity>
                 )}
@@ -58,8 +51,9 @@ export default Cardslider
 
 const styles = StyleSheet.create({
     container: {
-        marginVertical: 20
+        marginVertical: 10,
     },
+    //card
     cardouthead: {
         color: colors.text3,
         width: '90%',
@@ -67,7 +61,6 @@ const styles = StyleSheet.create({
         fontWeight: '200',
         borderRadius: 10,
         marginHorizontal: 10,
-        // textAlign: 'left',
     },
     cardsout: {
         width: '100%',
@@ -84,7 +77,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.col1,
     },
     cardimgin: {
-        width: '100%',
+        width: "100%",
         height: 200,
         borderRadius: 10,
     },

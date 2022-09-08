@@ -4,6 +4,7 @@ module.exports = {
         text1: 'red',
         text2: 'grey',
         text3: 'black',
+        textgreen: 'green',
     },
     titles: {
         title1: 30,
@@ -38,16 +39,16 @@ module.exports = {
         marginVertical: 20,
     },
     veg: {
-        backgroundColor: 'green',
-        width: 20,
-        height: 20,
-        borderRadius: 20
-    },
-    nonveg: {
-        backgroundColor: 'red',
         width: 20,
         height: 20,
         borderRadius: 20,
+        backgroundColor: 'green',
+    },
+    nonveg: {
+        width: 20,
+        height: 20,
+        borderRadius: 20,
+        backgroundColor: 'red',
     },
     navbtn: {
         backgroundColor: 'red',
@@ -68,10 +69,8 @@ module.exports = {
         left: 0,
         zIndex: 10,
     },
-
-
-    // incredecre
     incdecbtn: {
+
         backgroundColor: 'red',
         alignItems: 'center',
         justifyContent: 'center',
@@ -81,6 +80,7 @@ module.exports = {
         color: 'white',
         fontSize: 20,
         fontWeight: 'bold',
+
     },
     incdecinput: {
 

@@ -1,65 +1,64 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Image, TextInput } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, TextInput } from 'react-native'
 import React, { useState } from 'react'
+import { btn1, btn2, colors, hr80, navbtn, navbtnin, navbtnout, nonveg, veg } from '../globals/style';
 import { AntDesign } from '@expo/vector-icons';
-import { navbtn, navbtnin, navbtnout, colors, veg, nonveg, btn2, hr80, incdecbtn, incdecinput, incdecout } from '../globals/style';
+
 import { firebase } from '../../Firebase/firebaseConfig'
 
-const Productpage = ({ navigation, route }) => {
+import { incdecbtn, incdecinput, incdecout } from '../globals/style';
 
+const Productpage = ({ navigation, route }) => {
     const data = route.params;
-    // console.log('product page data ', data)
+    const [ischecked, setischecked] = useState(false);
+    const [quantity, setquantity] = useState('1');
+    const [addonquantity, setaddonquantity] = useState('0');
+    // console.log(data);
     if (route.params === undefined) {
         navigation.navigate('home')
     }
 
-    const [quantity, setQuantity] = useState('1');
-    const [addonquantity, setAddonquantity] = useState('0');
-
-    const addtocart = () => {
-        // console.log('add to cart')
+    const addTocart = () => {
         const docRef = firebase.firestore().collection('UserCart').doc(firebase.auth().currentUser.uid);
 
         const data1 = { data, Addonquantity: addonquantity, Foodquantity: quantity }
-        // console.log('data1 ', data1)
+        console.log(data1);
 
         docRef.get().then((doc) => {
             if (doc.exists) {
                 docRef.update({
                     cart: firebase.firestore.FieldValue.arrayUnion(data1)
                 })
-                alert('Added to cart')
-            }
-            else {
+                console.log('Updated')
+            } else {
                 docRef.set({
-                    cart: [data1],
+                    cart: [data1]
                 })
-                alert('Added to cart')
+                console.log('Added')
             }
+            alert('Added to cart')
         })
 
     }
 
     const increaseQuantity = () => {
-        setQuantity((parseInt(quantity) + 1).toString())
+        setquantity((parseInt(quantity) + 1).toString())
     }
     const decreaseQuantity = () => {
         if (parseInt(quantity) > 1) {
-            setQuantity((parseInt(quantity) - 1).toString())
+            setquantity((parseInt(quantity) - 1).toString())
         }
     }
 
     const increaseAddonQuantity = () => {
-
-        setAddonquantity((parseInt(addonquantity) + 1).toString())
+        setaddonquantity((parseInt(addonquantity) + 1).toString())
     }
     const decreaseAddonQuantity = () => {
         if (parseInt(addonquantity) > 0) {
-            setAddonquantity((parseInt(addonquantity) - 1).toString())
+            setaddonquantity((parseInt(addonquantity) - 1).toString())
         }
     }
 
 
-    // console.log(data.foodAddonPrice);
 
     return (
         <ScrollView style={styles.container}>
@@ -75,21 +74,23 @@ const Productpage = ({ navigation, route }) => {
                         uri: data.foodImageUrl
                     }} style={styles.cardimgin} />
                 </View>
+
+
                 <View style={styles.s2}>
                     <View style={styles.s2in}>
                         <Text style={styles.head1}>{data.foodName}</Text>
                         <Text style={styles.head2}>₹{data.foodPrice}/-</Text>
                     </View>
-
                     <View style={styles.s3}>
                         <Text style={styles.head3}>About Food</Text>
                         <Text style={styles.head4}>{data.foodDescription}</Text>
                         <View style={styles.s3in}>
                             {data.foodType == 'veg' ? <Text style={veg}></Text> : <Text style={nonveg}></Text>}
                             <Text style={styles.head5}>{data.foodType}</Text>
-
                         </View>
                     </View>
+
+
 
 
                     <View style={styles.container2}>
@@ -104,74 +105,75 @@ const Productpage = ({ navigation, route }) => {
                         </View>
                     </View>
 
-                    {data.foodAddonPrice != "" &&
-                        <View style={styles.container3}>
-                            <View style={hr80}></View>
-                            <Text style={styles.txt5}>Add Extra </Text>
-                            <View style={styles.c3in}>
-                                <Text style={styles.text4}>{data.foodAddon}</Text>
-                                <Text style={styles.text4}>₹{data.foodAddonPrice}/-</Text>
-                            </View>
-                            <View style={incdecout}>
-                                <Text style={incdecbtn} onPress={() => increaseAddonQuantity()}>+</Text>
-                                <TextInput value={addonquantity} style={incdecinput} />
-                                <Text style={incdecbtn} onPress={() => decreaseAddonQuantity()}>-</Text>
-                            </View>
+                    {data.foodAddonPrice && <View style={styles.container3}>
+                        <View style={hr80}></View>
+
+                        <Text style={styles.txt3}>Add Extra </Text>
+                        <View style={styles.c3in}>
+                            <Text style={styles.text4}>{data.foodAddon}</Text>
+                            <Text style={styles.text4}>₹{data.foodAddonPrice}/-</Text>
                         </View>
-                    }
 
+                        <View style={incdecout}>
 
+                            <Text onPress={() => increaseAddonQuantity()} style={incdecbtn}>+</Text>
+                            <TextInput value={addonquantity} style={incdecinput} />
+                            <Text onPress={() => decreaseAddonQuantity()} style={incdecbtn}>-</Text>
+
+                        </View>
+                        {/* <View style={hr80}></View> */}
+
+                    </View>}
 
                     <View style={styles.container3}>
                         <View style={hr80}></View>
-                        <Text style={styles.txt5}>Food Quantity</Text>
+
+                        <Text style={styles.txt3}>Food Quantity</Text>
                         <View style={incdecout}>
-                            <Text style={incdecbtn} onPress={() => increaseQuantity()}>+</Text>
+
+                            <Text onPress={() => increaseQuantity()} style={incdecbtn}>+</Text>
                             <TextInput value={quantity} style={incdecinput} />
-                            <Text style={incdecbtn} onPress={() => decreaseQuantity()}>-</Text>
+                            <Text onPress={() => decreaseQuantity()} style={incdecbtn}>-</Text>
+
                         </View>
                         <View style={hr80}></View>
                     </View>
 
-                </View>
+                    <View style={styles.container4}>
+                        {/* <View style={hr80}></View> */}
 
+                        <View style={styles.c4in}>
+                            <Text style={styles.txt2}>Total Price</Text>
+                            {data.foodAddonPrice ?
+                                <Text style={styles.txt3}>₹{
+                                    ((parseInt(data.foodPrice) * parseInt(quantity))
+                                        + parseInt(addonquantity) * parseInt(data.foodAddonPrice)).toString()
 
-                <View style={styles.container4}>
-                    <View style={styles.c4in}>
-                        <Text style={styles.txt2}>Total Price</Text>
-                        {data.foodAddonPrice != "" ? <Text style={styles.txt6}>
-                            ₹{((
-                                parseInt(data.foodPrice) * parseInt(quantity)
-                            ) + parseInt(addonquantity) * parseInt(data.foodAddonPrice)
-                            ).toString()}
-                        </Text> :
-                            <Text style={styles.txt6}>
-                                ₹{(
-                                    parseInt(data.foodPrice) * parseInt(quantity)
-                                ).toString()}/-
-                            </Text>}
+                                }/-</Text>
+
+                                :
+                                <Text style={styles.txt3}>₹{
+                                    ((parseInt(data.foodPrice) * parseInt(quantity))).toString()
+                                }/-</Text>
+                            }
+                        </View>
+
+                        <View style={hr80}></View>
                     </View>
-                    <View style={hr80}></View>
 
-                </View>
-
-                <View style={styles.btncont}>
-                    <TouchableOpacity style={btn2} onPress={() => addtocart()}>
-                        <Text style={styles.btntxt}>Add to Cart</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={btn2}>
-                        <Text style={styles.btntxt}>Buy Now</Text>
-                    </TouchableOpacity>
+                    <View style={styles.btncont}>
+                        <TouchableOpacity style={btn2} onPress={() => { addTocart() }}>
+                            <Text style={styles.btntxt}>Add to Cart</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={btn2}>
+                            <Text style={styles.btntxt}>Buy Now</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
-
-
-
         </ScrollView>
     )
 }
-
-export default Productpage
 
 const styles = StyleSheet.create({
     container: {
@@ -179,8 +181,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         // alignItems: 'center',
         width: '100%',
-    },
 
+    },
     container1: {
         // position: 'absolute',
         // top: 0,
@@ -195,6 +197,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+
     },
     cardimgin: {
         width: '100%',
@@ -203,6 +206,11 @@ const styles = StyleSheet.create({
     s2: {
         width: '100%',
         padding: 20,
+        position: 'relative',
+        top: -30,
+        backgroundColor: colors.col1,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
     },
     s2in: {
         flexDirection: 'row',
@@ -253,13 +261,6 @@ const styles = StyleSheet.create({
         fontWeight: '200',
         marginLeft: 10,
     },
-    btncont: {
-        width: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 20,
-        flexDirection: 'row',
-    },
     btntxt: {
         backgroundColor: colors.text1,
         color: colors.col1,
@@ -269,8 +270,15 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: '90%',
         textAlign: 'center',
-    },
 
+    },
+    btncont: {
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 0,
+        flexDirection: 'row',
+    },
     container2: {
         width: '90%',
         backgroundColor: colors.col1,
@@ -300,9 +308,7 @@ const styles = StyleSheet.create({
     },
     txt3: {
         color: colors.text1,
-        fontSize: 16,
-        width: '30%',
-        textAlign: 'center',
+        fontSize: 18,
     },
     dash: {
         width: 1,
@@ -310,44 +316,27 @@ const styles = StyleSheet.create({
         backgroundColor: colors.text1,
         marginHorizontal: 10,
     },
-    container3: {
-        width: '90%',
-        alignSelf: 'center',
-        alignItems: 'center',
-    },
-    txt5: {
-        color: colors.text1,
-        fontSize: 18,
-        // width: '30%',
-        textAlign: 'center',
-    },
     c3in: {
         flexDirection: 'row',
         justifyContent: 'center',
         width: '100%',
+    },
+    container3: {
+        width: '90%',
+        alignSelf: 'center',
+        alignItems: 'center',
     },
     text4: {
         color: colors.text3,
         fontSize: 20,
         marginHorizontal: 10,
     },
-
-    container4: {
-        width: '90%',
-        alignSelf: 'center',
-        alignItems: 'center',
-    },
     c4in: {
         flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        width: '100%',
+        justifyContent: 'space-between',
         alignItems: 'center',
-    },
-    txt6: {
-        color: colors.text1,
-        fontSize: 35,
-        // width: '30%',
-        textAlign: 'center',
-    },
-
+        width: '100%',
+    }
 })
+
+export default Productpage

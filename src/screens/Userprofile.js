@@ -1,33 +1,35 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import { firebase } from '../../Firebase/firebaseConfig'
+import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import HomeHeadNav from '../components/HomeHeadNav'
+import { navbtn, navbtnin } from '../globals/style'
 import { AntDesign } from '@expo/vector-icons';
-import { navbtn, navbtnin, navbtnout, colors } from '../globals/style';
-const Userprofile = ({ navigation }) => {
+import { colors, btn2, titles } from '../globals/style';
 
+import { firebase } from '../../Firebase/firebaseConfig';
+const Userprofile = ({ navigation }) => {
     const [userloggeduid, setUserloggeduid] = useState(null);
     const [userdata, setUserdata] = useState(null);
     useEffect(() => {
         const checklogin = () => {
             firebase.auth().onAuthStateChanged((user) => {
+                // console.log(user);
                 if (user) {
-                    // console.log(user);
+                    // navigation.navigate('home');
                     setUserloggeduid(user.uid);
+                } else {
+                    // No user is signed in.
+                    console.log('no user');
                 }
-                else {
-                    setUserloggeduid(null);
-                }
-            })
+            });
         }
-        checklogin()
+        checklogin();
     }, [])
-
 
     // console.log(userloggeduid);
 
     useEffect(() => {
         const getuserdata = async () => {
-            const docRef = firebase.firestore().collection('UserData').where('uid', '==', userloggeduid);
+            const docRef = firebase.firestore().collection('UserData').where('uid', '==', userloggeduid)
             const doc = await docRef.get();
             if (!doc.empty) {
                 doc.forEach((doc) => {
@@ -35,31 +37,31 @@ const Userprofile = ({ navigation }) => {
                 })
             }
             else {
-                // navigation.navigate('login');
-                console.log('No such document!');
+                console.log('no user data');
             }
         }
         getuserdata();
-    }, [userloggeduid])
+    }, [userloggeduid]);
 
     // console.log(userdata);
+
+    const [oldpassword, setOldPassword] = useState('');
+    const [newpassword, setNewPassword] = useState('');
+
+
     return (
         <View style={styles.containerout}>
-            <TouchableOpacity onPress={() => navigation.navigate('home')} style={navbtnout}>
+            <TouchableOpacity onPress={() => navigation.navigate('home')}>
                 <View style={navbtn}>
                     <AntDesign name="back" size={24} color="black" style={navbtnin} />
                 </View>
             </TouchableOpacity>
-
             <View style={styles.container}>
                 <Text style={styles.head1}>Your Profile</Text>
                 <View style={styles.containerin}>
-                    <Text style={styles.head2}>Name:
-                        {userdata ?
-                            <Text style={styles.head2in}> {userdata.name}</Text> :
-                            'loading'}
-                    </Text>
-
+                    <Text style={styles.head2}>Name: {userdata ? <Text style={styles.head2in}>
+                        {userdata.name}
+                    </Text> : 'loading'}</Text>
 
                     <Text style={styles.head2}>Email: {userdata ? <Text style={styles.head2in}>
                         {userdata.email}
@@ -81,7 +83,6 @@ const Userprofile = ({ navigation }) => {
 export default Userprofile
 
 const styles = StyleSheet.create({
-
     containerout: {
         flex: 1,
         backgroundColor: '#fff',
@@ -114,9 +115,21 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: '200',
         marginTop: 20,
+
     },
     head2in: {
         fontSize: 20,
         fontWeight: '300',
+    },
+    inputout: {
+        flexDirection: 'row',
+        width: '100%',
+        marginVertical: 10,
+        backgroundColor: colors.col1,
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        // alignSelf: 'center',
+        elevation: 20,
     },
 })
