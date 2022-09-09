@@ -50,7 +50,6 @@ const UserCart = ({ navigation }) => {
             cart: firebase.firestore.FieldValue.arrayRemove(item)
         })
         getcartdata();
-
     }
     return (
 
@@ -101,7 +100,7 @@ const UserCart = ({ navigation }) => {
                         <Text style={styles.txt6}>₹{totalCost}</Text>
                     </View>
                     <TouchableOpacity style={btn2}>
-                        <Text style={styles.btntxt}>Place Order</Text>
+                        <Text style={styles.btntxt} onPress={() => navigation.navigate('placeorder', { cartdata })}>Place Order</Text>
                     </TouchableOpacity>
                 </View>
             </View>
