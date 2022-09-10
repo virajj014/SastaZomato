@@ -1,36 +1,25 @@
-import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { AntDesign } from '@expo/vector-icons';
 import { btn1, colors, hr80, navbtn, navbtnin } from '../globals/style';
 import { firebase } from '../../Firebase/firebaseConfig';
+import { AntDesign } from '@expo/vector-icons';
+
 const Placeorder = ({ navigation, route }) => {
-    const { cartdata } = route.params;
     const [orderdata, setOrderdata] = useState([]);
     const [totalCost, setTotalCost] = useState('0');
+    const { cartdata } = route.params;
+    useEffect(() => {
+        setOrderdata(JSON.parse(cartdata));
+    }, [cartdata])
+
+    // console.log(orderdata.cart[0])
+    // console.log(typeof (orderdata))
 
     // console.log(cartdata)
-    useEffect(() => {
-        setOrderdata(JSON.parse(cartdata))
-    }, [cartdata])
-
-    // console.log(typeof (orderdata))
-    useEffect(() => {
-        if (cartdata != null) {
-            const foodprice = JSON.parse(cartdata).cart;
-            let totalfoodprice = 0;
-            foodprice.map((item) => {
-                // console.log(item.data.foodPrice)
-                totalfoodprice = (parseInt(item.data.foodPrice) * parseInt(item.Foodquantity)) +
-                    (parseInt(item.data.foodAddonPrice) * parseInt(item.Addonquantity)) + totalfoodprice;
-            })
-            // console.log(totalfoodprice)
-            setTotalCost(JSON.stringify(totalfoodprice))
-        }
-    }, [cartdata])
 
 
 
-    // userdata-------------------------------------------------------------
+    // userdata -------------------------------------------------------
     const [userloggeduid, setUserloggeduid] = useState(null);
     const [userdata, setUserdata] = useState(null);
     useEffect(() => {
@@ -48,6 +37,9 @@ const Placeorder = ({ navigation, route }) => {
         }
         checklogin();
     }, [])
+
+    // // console.log(userloggeduid);
+
     useEffect(() => {
         const getuserdata = async () => {
             const docRef = firebase.firestore().collection('UserData').where('uid', '==', userloggeduid)
@@ -64,15 +56,24 @@ const Placeorder = ({ navigation, route }) => {
         getuserdata();
     }, [userloggeduid]);
 
+    useEffect(() => {
+        if (cartdata != null) {
+            const foodprice = JSON.parse(cartdata).cart;
+            let totalfoodprice = 0;
+            foodprice.map((item) => {
+                // console.log(item.data.foodPrice)
+                totalfoodprice = (parseInt(item.data.foodPrice) * parseInt(item.Foodquantity)) +
+                    (parseInt(item.data.foodAddonPrice) * parseInt(item.Addonquantity)) + totalfoodprice;
+            })
+            // console.log(totalfoodprice)
+            setTotalCost(JSON.stringify(totalfoodprice))
+        }
+    }, [cartdata])
 
-    // console.log(userloggeduid);
     // console.log(userdata);
 
-
-    // place order-------------------------------------------------------------
     const placenow = () => {
         const docRef = firebase.firestore().collection('UserOrders').doc(new Date().getTime().toString());
-
         docRef.set({
             orderid: docRef.id,
             orderdata: orderdata.cart,
@@ -84,12 +85,13 @@ const Placeorder = ({ navigation, route }) => {
             ordername: userdata.name,
             orderuseruid: userloggeduid,
             orderpayment: 'online',
-            paymentstatus: 'paid'
-        }).then(() => {
-            alert('order placed');
+            paymenttotal: totalCost
         })
-        // console.log('pay')
+        // navigation.navigate('home');
+        alert('Order Placed Successfully');
+        // navigation.navigate('trackorders');
     }
+
     return (
         <ScrollView style={styles.containerout}>
             <TouchableOpacity onPress={() => navigation.navigate('home')}>
@@ -98,6 +100,7 @@ const Placeorder = ({ navigation, route }) => {
                 </View>
             </TouchableOpacity>
             <View style={styles.container}>
+
                 <Text style={styles.head1}>Your Order Summary</Text>
                 <FlatList style={styles.c1} data={orderdata.cart} renderItem={
                     ({ item }) => {
@@ -114,37 +117,34 @@ const Placeorder = ({ navigation, route }) => {
                                     </View>
                                 </View>
 
-                                {item.Addonquantity > 0 &&
-                                    <View style={styles.row}>
-                                        <View style={styles.left}>
-                                            <Text style={styles.qty}>{item.Addonquantity}</Text>
-                                            <Text style={styles.title}>{item.data.foodAddon}</Text>
-                                            <Text style={styles.price1}>₹{item.data.foodAddonPrice}</Text>
-                                        </View>
-                                        <View style={styles.right}>
-                                            <Text style={styles.totalprice}>₹{parseInt(item.Addonquantity) * parseInt(item.data.foodAddonPrice)}</Text>
-                                        </View>
+                                <View style={styles.row}>
+                                    <View style={styles.left}>
+                                        <Text style={styles.qty}>{item.Addonquantity}</Text>
+                                        <Text style={styles.title}>{item.data.foodAddon}</Text>
+                                        <Text style={styles.price1}>₹{item.data.foodAddonPrice}</Text>
                                     </View>
-                                }
+                                    <View style={styles.right}>
+                                        <Text style={styles.totalprice}>₹{parseInt(item.Addonquantity) * parseInt(item.data.foodAddonPrice)}</Text>
+                                    </View>
+                                </View>
                             </View>
                         )
                     }
                 } />
+                <View style={hr80}>
 
-                <View style={hr80}></View>
-
+                </View>
                 <View style={styles.row}>
                     <View style={styles.left}>
                         <Text style={styles.title}>Order Total :</Text>
                     </View>
                     <View style={styles.left}>
-                        <View style={styles.left}>
-                            <Text style={styles.totalprice}>₹{totalCost}</Text>
-                        </View>
+                        <Text style={styles.totalprice}>₹{totalCost}</Text>
                     </View>
                 </View>
-                <View style={hr80}></View>
 
+                <View style={hr80}>
+                </View>
 
                 <View style={styles.userdataout}>
                     <Text style={styles.head1}>Your Details</Text>
@@ -156,7 +156,6 @@ const Placeorder = ({ navigation, route }) => {
                             <Text style={styles.title}>{userdata?.name}</Text>
                         </View>
                     </View>
-
                     <View style={styles.row}>
                         <View style={styles.left}>
                             <Text style={styles.title}>Email :</Text>
@@ -187,7 +186,8 @@ const Placeorder = ({ navigation, route }) => {
                 </View>
 
                 <View style={hr80}></View>
-                <View>
+
+                <View >
                     <TouchableOpacity style={btn1}>
                         <Text style={styles.btntext} onPress={() => placenow()}>Proceed to Payment</Text>
                     </TouchableOpacity>
@@ -200,6 +200,7 @@ const Placeorder = ({ navigation, route }) => {
 export default Placeorder
 
 const styles = StyleSheet.create({
+
     container: {
         flexDirection: 'column',
         alignItems: 'center',
@@ -225,14 +226,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 10,
     },
-    left: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    right: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
+
     qty: {
         width: 40,
         height: 30,
@@ -255,6 +249,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginRight: 10,
         color: colors.text1,
+    },
+    left: {
+        flexDirection: 'row',
+    },
+    right: {
+        flexDirection: 'row',
     },
     totalprice: {
         fontSize: 17,

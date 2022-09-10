@@ -44,13 +44,19 @@ const UserCart = ({ navigation }) => {
 
     // console.log(JSON.parse(cartdata).cart[0].data);
 
+
+
     const deleteItem = (item) => {
         const docRef = firebase.firestore().collection('UserCart').doc(firebase.auth().currentUser.uid);
         docRef.update({
             cart: firebase.firestore.FieldValue.arrayRemove(item)
         })
         getcartdata();
+
     }
+
+    // console.log(typeof (cartdata))
+    // console.log(cartdata)
     return (
 
         <View style={styles.containerout}>

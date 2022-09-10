@@ -58,7 +58,9 @@ const Productpage = ({ navigation, route }) => {
         }
     }
 
-
+    const cartdata = JSON.stringify({ cart: [{ Addonquantity: addonquantity, Foodquantity: quantity, data }] });
+    // console.log(typeof (cartdata))
+    // console.log(cartdata)
 
     return (
         <ScrollView style={styles.container}>
@@ -166,7 +168,7 @@ const Productpage = ({ navigation, route }) => {
                             <Text style={styles.btntxt}>Add to Cart</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={btn2}>
-                            <Text style={styles.btntxt}>Buy Now</Text>
+                            <Text style={styles.btntxt} onPress={() => navigation.navigate('placeorder', { cartdata })}>Buy Now</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

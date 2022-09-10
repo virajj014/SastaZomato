@@ -24,7 +24,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.virajj014.FoodApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"

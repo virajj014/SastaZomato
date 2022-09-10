@@ -31,6 +31,7 @@ module.exports = {
         elevation: 10,
         color: 'white',
         margin: 10,
+        alignSelf: 'center',
     },
     hr80: {
         width: '80%',

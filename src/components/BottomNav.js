@@ -20,7 +20,7 @@ const BottomNav = ({ navigation }) => {
 
             </View>
             <View style={styles.btncon1} >
-                <FontAwesome5 name="map-marked-alt" size={30} color="black" style={styles.icon1} onPress={() => { navigation.navigate('home') }} />
+                <FontAwesome5 name="map-marked-alt" size={30} color="black" style={styles.icon1} onPress={() => { navigation.navigate('trackorders') }} />
             </View>
         </View>
     )
